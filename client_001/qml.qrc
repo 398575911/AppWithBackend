@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>LoginPage.qml</file>
-        <file>HomePageGuest.qml</file>
-        <file>HomePageCalc.qml</file>
+        <file>SendPage.qml</file>
     </qresource>
 </RCC>

@@ -10,8 +10,6 @@
 #include "helloworld.grpc.pb.h"
 
 
-
-
 class ApiClient : public QObject
 {
     Q_OBJECT
@@ -21,9 +19,12 @@ public:
 signals:
 
 public slots:
-    QString useSayHello(QString user);
+    QString sayHello(QString user);
 
 private:
+    std::string m_server_api_address;
+    std::shared_ptr<grpc::Channel> m_channel;
+    std::unique_ptr<helloworld::Greeter::Stub> m_greeterStub;
 
 };
 #endif // APICLIENT_H

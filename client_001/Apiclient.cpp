@@ -1,33 +1,34 @@
 #include "Apiclient.h"
 
-using grpc::Channel;
-using grpc::ClientContext;
-using grpc::Status;
-using helloworld::HelloRequest;
-using helloworld::HelloReply;
-using helloworld::Greeter;
-
 ApiClient::ApiClient(QObject *parent) : QObject(parent)
 {
+    m_server_api_address = "localhost:50051";  // default
 
+    // open channel
+    m_channel = grpc::CreateChannel(m_server_api_address, grpc::InsecureChannelCredentials());
+    m_greeterStub = helloworld::Greeter::NewStub(m_channel);
 }
 
 
-QString ApiClient::useSayHello(QString user)
+QString ApiClient::sayHello(QString user)
 {
-    std::shared_ptr<grpc::Channel> channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
-    std::unique_ptr<helloworld::Greeter::Stub> stub = helloworld::Greeter::NewStub(channel);
+    // client context
+    grpc::ClientContext context;
 
-    ClientContext context;
-    HelloRequest request;
+    // define our request
+    helloworld::HelloRequest request;
     request.set_name(user.toStdString());
-    HelloReply reply;
 
-    Status status = stub->SayHello(&context, request, &reply);
+    // prepare a place to store the reply
+    helloworld::HelloReply reply;
 
+    // call the api
+    grpc::Status status = m_greeterStub->SayHello(&context, request, &reply);
+
+    // return in function of status
     if(status.ok()){
         return QString::fromStdString(reply.message());
     } else {
-        return QString::fromStdString("rpc failed");
+        return QString::fromStdString("error");
     }
 }
