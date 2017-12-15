@@ -1,0 +1,8 @@
+protoc --cpp_out=. --proto_path=../protos/ ../protos/helloworld.proto
+protoc -I ../protos --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ../protos/helloworld.proto 
+
+mv ../protos/helloworld.pb.* .
+
+old="protos/helloworld.pb.h"
+new="helloworld.pb.h"
+sed -i -e 's/${old}/${new}/g' helloworld.pb.cc
